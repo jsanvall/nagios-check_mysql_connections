@@ -9,3 +9,7 @@ Output:
 ```
 OK - 35 Database Connections |Connections=35;;;;
 ```
+Requirements:
+```
+mysql-client
+```
