@@ -7,6 +7,7 @@ function usage {
   echo "    -u username Example: root"
   echo "    -p password Example: 1234"
   echo "    -h host Example: localhost"
+  echo "    --defaults-file <FILE_PATH> "
   echo ""
   exit 1
 }
@@ -35,6 +36,10 @@ do
     HOST="$2"
     shift
     ;;
+    --defaults-file)
+    FILE="$2"
+    shift
+    ;;
     *)
     usage
     shift
@@ -44,9 +49,13 @@ do
 done
 
 [ ! -z ${WARN} ] && [ ! -z ${CRIT} ] || usage
-
-CONNECTIONS=$(echo "show processlist;" | mysql -h ${HOST} -u${USER} -p${PASS} 2> /dev/null | sed 1,1d | wc -l)
-
+if [ ! -z ${FILE} ]; then
+  CONNECTIONS=$(echo "show processlist;" | mysql --defaults-file=${FILE} 2> /dev/null | sed 1,1d  | wc -l)
+else
+  CONNECTIONS=$(echo "show processlist;" | mysql -h ${HOST} -u${USER} -p${PASS}  2> /dev/null | sed 1,1d | wc -l)
+fi
+echo ${CONNECTIONS}
+exit 0
 if [[ ${CONNECTIONS} -gt ${CRIT} ]]
 then
   echo "CRITICAL - ${CONNECTIONS} Database Connections |Connections=${CONNECTIONS};;;;"
