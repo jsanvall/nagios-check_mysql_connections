@@ -54,8 +54,6 @@ if [ ! -z ${FILE} ]; then
 else
   CONNECTIONS=$(echo "show processlist;" | mysql -h ${HOST} -u${USER} -p${PASS}  2> /dev/null | sed 1,1d | wc -l)
 fi
-echo ${CONNECTIONS}
-exit 0
 if [[ ${CONNECTIONS} -gt ${CRIT} ]]
 then
   echo "CRITICAL - ${CONNECTIONS} Database Connections |Connections=${CONNECTIONS};;;;"
